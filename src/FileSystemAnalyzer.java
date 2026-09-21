@@ -1,4 +1,4 @@
-
+import java.util.Stack;
 public class FileSystemAnalyzer {
 
     // ==========================================
@@ -82,5 +82,40 @@ public class FileSystemAnalyzer {
         }
 
         return null;
+    }
+
+    // ==========================================
+    // PHASE 3: Iterative File Counter
+    // ==========================================
+
+    public static int countFilesIterative(Folder rootFolder) {
+
+        Stack<FileSystemItem> stack = new Stack<>();
+
+        // Start with the root folder
+        stack.push(rootFolder);
+
+        int fileCount = 0;
+
+        // Continue until all items have been visited
+        while (!stack.isEmpty()) {
+
+            FileSystemItem current = stack.pop();
+
+            if (current instanceof FileItem) {
+
+                fileCount++;
+
+            } else if (current instanceof Folder) {
+
+                Folder folder = (Folder) current;
+
+                for (FileSystemItem child : folder.getItems()) {
+                    stack.push(child);
+                }
+            }
+        }
+
+        return fileCount;
     }
 }

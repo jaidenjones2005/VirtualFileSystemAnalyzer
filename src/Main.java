@@ -63,5 +63,25 @@ public class Main {
             System.out.println("No files found.");
 
         }
+
+        // ==========================================
+        // PHASE 3: Iterative File Counter
+        // ==========================================
+
+        int iterativeCount =
+                FileSystemAnalyzer.countFilesIterative(root);
+
+        System.out.println("Iterative file count: " + iterativeCount);
+
+        // Verify that both methods produce the same result
+        boolean countsMatch = (totalFiles == iterativeCount);
+
+        System.out.println("Counts match: " + countsMatch);
+
+        if (!countsMatch) {
+            throw new AssertionError(
+                    "Recursive and iterative counts do not match!"
+            );
+        }
     }
 }
