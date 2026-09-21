@@ -31,3 +31,16 @@ The recursive method was easier for me to understand because it automatically se
 In terms of overhead time, both methods visit each item in the file system, but recursion has additional method-call overhead. For overhead space, recursion uses the runtime call stack, while iteration uses an explicit Stack to store items that still need processing. The iterative method can also avoid stack overflow problems caused by very deep recursion, although its explicit stack still uses memory.
 
 I find recursion more intuitive because the code is shorter and follows the folder structure naturally. However, I can see why iteration could be useful when working with very deep directory structures.
+## Phase 4: Interactive File System Inspector
+
+**Journal Prompt:** What would happen to both your recursive method (`countFilesRecursive`) and your iterative stack method (`countFilesIterative`) if a folder accidentally contained a reference to itself or an ancestor folder? How would each version fail at runtime, and how does this relate to the Smaller-Caller question?
+
+**Response:**
+
+If a folder contained a reference to itself or one of its ancestor folders, the recursive method would keep calling itself on the same folders instead of reaching a base case. Eventually, it would likely cause a StackOverflowError because the runtime call stack would keep growing.
+
+The iterative method would also get stuck because it would keep pushing the same folder references onto its explicit Stack. The while loop would never finish because the stack would never stay empty.
+
+This relates to the Smaller-Caller rule because each recursive call is supposed to work on a smaller sub-problem. A circular reference breaks that rule by allowing the method to revisit the same folder repeatedly.
+
+To prevent this issue, I could keep track of visited folders and avoid processing the same folder reference more than once.

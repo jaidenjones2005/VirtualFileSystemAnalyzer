@@ -118,4 +118,47 @@ public class FileSystemAnalyzer {
 
         return fileCount;
     }
+    // PHASE 4: Display the file system hierarchy
+    public static void printHierarchy(
+            FileSystemItem item, String indent) {
+
+        if (item instanceof FileItem) {
+
+            System.out.println(indent + "- " + item.getName()
+                    + " (" + item.getSizeInKB() + " KB)");
+
+        } else if (item instanceof Folder) {
+
+            Folder folder = (Folder) item;
+
+            System.out.println(indent + folder.getName() + "/");
+
+            for (FileSystemItem child : folder.getItems()) {
+                printHierarchy(child, indent + "  ");
+            }
+        }
+    }
+    // PHASE 4: Find a folder by name
+    public static Folder findFolder(
+            Folder current, String targetName) {
+
+        if (current.getName().equalsIgnoreCase(targetName)) {
+            return current;
+        }
+
+        for (FileSystemItem item : current.getItems()) {
+
+            if (item instanceof Folder) {
+
+                Folder found = findFolder(
+                        (Folder) item, targetName);
+
+                if (found != null) {
+                    return found;
+                }
+            }
+        }
+
+        return null;
+    }
 }

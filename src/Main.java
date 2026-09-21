@@ -1,87 +1,225 @@
 
+import java.util.Scanner;
+
 public class Main {
 
     public static void main(String[] args) {
 
-        // Create the root folder
+        Scanner scanner = new Scanner(System.in);
+
+        // Create the sample file system
         Folder root = new Folder("Root");
 
-        // Create subfolders
         Folder documents = new Folder("Documents");
         Folder pictures = new Folder("Pictures");
         Folder vacations = new Folder("Vacations");
 
-        // Add files to Documents
         documents.addItem(new FileItem("homework.txt", 100));
         documents.addItem(new FileItem("notes.txt", 50));
 
-        // Add files to Vacations
         vacations.addItem(new FileItem("beach.jpg", 500));
         vacations.addItem(new FileItem("sunset.jpg", 750));
 
-        // Nest Vacations inside Pictures
         pictures.addItem(vacations);
 
-        // Add Documents and Pictures to Root
         root.addItem(documents);
         root.addItem(pictures);
 
-        // ==========================================
-        // PHASE 1: Recursive File Counter
-        // ==========================================
+        boolean running = true;
 
-        int totalFiles =
-                FileSystemAnalyzer.countFilesRecursive(root);
+        while (running) {
 
-        System.out.println("Total files: " + totalFiles);
+            System.out.println("\n==============================");
+            System.out.println(" VIRTUAL FILE SYSTEM ANALYZER");
+            System.out.println("==============================");
+            System.out.println("1. Display File System Structure");
+            System.out.println("2. Add File to a Folder");
+            System.out.println("3. Add Subfolder");
+            System.out.println("4. Run Recursive Audit");
+            System.out.println("5. Run Iterative Audit & Verification");
+            System.out.println("6. Exit");
+            System.out.print("Enter your choice: ");
 
-        // ==========================================
-        // PHASE 2: Recursive Storage Calculation
-        // ==========================================
+            String choice = scanner.nextLine().trim();
 
-        int totalSize =
-                FileSystemAnalyzer.calculateTotalSizeRecursive(root);
+            switch (choice) {
 
-        System.out.println("Total storage: " + totalSize + " KB");
+                case "1":
 
-        // ==========================================
-        // PHASE 2: Find the Largest File
-        // ==========================================
+                    System.out.println("\nFile System Structure:");
 
-        FileItem largest =
-                FileSystemAnalyzer.findLargestFileRecursive(root);
+                    FileSystemAnalyzer.printHierarchy(root, "");
 
-        if (largest != null) {
+                    break;
 
-            System.out.println("Largest file: " + largest.getName());
+                case "2":
 
-            System.out.println("Largest file size: "
-                    + largest.getSizeInKB() + " KB");
+                    System.out.print("Enter target folder name: ");
+                    String targetName = scanner.nextLine().trim();
 
-        } else {
+                    Folder targetFolder =
+                            FileSystemAnalyzer.findFolder(
+                                    root, targetName);
 
-            System.out.println("No files found.");
+                    if (targetFolder == null) {
 
+                        System.out.println("Folder not found.");
+                        break;
+                    }
+
+                    System.out.print("Enter new file name: ");
+                    String fileName = scanner.nextLine().trim();
+
+                    if (fileName.isEmpty()) {
+
+                        System.out.println("File name cannot be empty.");
+                        break;
+                    }
+
+                    System.out.print("Enter file size in KB: ");
+                    String sizeInput = scanner.nextLine().trim();
+
+                    try {
+
+                        int fileSize = Integer.parseInt(sizeInput);
+
+                        if (fileSize < 0) {
+
+                            System.out.println(
+                                    "File size cannot be negative.");
+
+                        } else {
+
+                            targetFolder.addItem(
+                                    new FileItem(fileName, fileSize));
+
+                            System.out.println(
+                                    "File added successfully!");
+                        }
+
+                    } catch (NumberFormatException e) {
+
+                        System.out.println(
+                                "Invalid size. Please enter a valid integer.");
+                    }
+
+                    break;
+
+                case "3":
+
+                    System.out.print("Enter parent folder name: ");
+                    String parentName = scanner.nextLine().trim();
+
+                    Folder parentFolder =
+                            FileSystemAnalyzer.findFolder(
+                                    root, parentName);
+
+                    if (parentFolder == null) {
+
+                        System.out.println("Parent folder not found.");
+                        break;
+                    }
+
+                    System.out.print("Enter new subfolder name: ");
+                    String newFolderName = scanner.nextLine().trim();
+
+                    if (newFolderName.isEmpty()) {
+
+                        System.out.println(
+                                "Folder name cannot be empty.");
+                        break;
+                    }
+
+                    parentFolder.addItem(
+                            new Folder(newFolderName));
+
+                    System.out.println(
+                            "Subfolder added successfully!");
+
+                    break;
+
+                case "4":
+
+                    System.out.println("\nRECURSIVE AUDIT");
+
+                    int recursiveCount =
+                            FileSystemAnalyzer.countFilesRecursive(root);
+
+                    int totalSize =
+                            FileSystemAnalyzer.calculateTotalSizeRecursive(root);
+
+                    FileItem largest =
+                            FileSystemAnalyzer.findLargestFileRecursive(root);
+
+                    System.out.println(
+                            "Total files: " + recursiveCount);
+
+                    System.out.println(
+                            "Total storage: " + totalSize + " KB");
+
+                    if (largest != null) {
+
+                        System.out.println(
+                                "Largest file: " + largest.getName());
+
+                        System.out.println(
+                                "Largest file size: "
+                                        + largest.getSizeInKB() + " KB");
+
+                    } else {
+
+                        System.out.println("No files found.");
+                    }
+
+                    break;
+
+                case "5":
+
+                    System.out.println("\nITERATIVE AUDIT");
+
+                    int iterativeCount =
+                            FileSystemAnalyzer.countFilesIterative(root);
+
+                    int recursiveResult =
+                            FileSystemAnalyzer.countFilesRecursive(root);
+
+                    System.out.println(
+                            "Iterative file count: " + iterativeCount);
+
+                    System.out.println(
+                            "Recursive file count: " + recursiveResult);
+
+                    if (iterativeCount == recursiveResult) {
+
+                        System.out.println(
+                                "Verification: Counts match!");
+
+                    } else {
+
+                        System.out.println(
+                                "Verification: Counts DO NOT match!");
+                    }
+
+                    break;
+
+                case "6":
+
+                    System.out.println(
+                            "Exiting Virtual File System Analyzer...");
+
+                    running = false;
+
+                    break;
+
+                default:
+
+                    System.out.println(
+                            "Invalid choice. Please select 1-6.");
+
+                    break;
+            }
         }
 
-        // ==========================================
-        // PHASE 3: Iterative File Counter
-        // ==========================================
-
-        int iterativeCount =
-                FileSystemAnalyzer.countFilesIterative(root);
-
-        System.out.println("Iterative file count: " + iterativeCount);
-
-        // Verify that both methods produce the same result
-        boolean countsMatch = (totalFiles == iterativeCount);
-
-        System.out.println("Counts match: " + countsMatch);
-
-        if (!countsMatch) {
-            throw new AssertionError(
-                    "Recursive and iterative counts do not match!"
-            );
-        }
+        scanner.close();
     }
 }
