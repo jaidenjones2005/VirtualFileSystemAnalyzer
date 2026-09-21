@@ -22,14 +22,46 @@ public class Main {
         // Nest Vacations inside Pictures
         pictures.addItem(vacations);
 
-        // Add folders to Root
+        // Add Documents and Pictures to Root
         root.addItem(documents);
         root.addItem(pictures);
 
-        // Run the recursive file counter
+        // ==========================================
+        // PHASE 1: Recursive File Counter
+        // ==========================================
+
         int totalFiles =
                 FileSystemAnalyzer.countFilesRecursive(root);
 
         System.out.println("Total files: " + totalFiles);
+
+        // ==========================================
+        // PHASE 2: Recursive Storage Calculation
+        // ==========================================
+
+        int totalSize =
+                FileSystemAnalyzer.calculateTotalSizeRecursive(root);
+
+        System.out.println("Total storage: " + totalSize + " KB");
+
+        // ==========================================
+        // PHASE 2: Find the Largest File
+        // ==========================================
+
+        FileItem largest =
+                FileSystemAnalyzer.findLargestFileRecursive(root);
+
+        if (largest != null) {
+
+            System.out.println("Largest file: " + largest.getName());
+
+            System.out.println("Largest file size: "
+                    + largest.getSizeInKB() + " KB");
+
+        } else {
+
+            System.out.println("No files found.");
+
+        }
     }
 }

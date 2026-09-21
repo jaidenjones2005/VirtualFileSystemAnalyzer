@@ -1,14 +1,16 @@
 
 public class FileSystemAnalyzer {
 
+    // ==========================================
+    // PHASE 1: Recursive File Counter
+    // ==========================================
+
     public static int countFilesRecursive(FileSystemItem item) {
 
-        // Base case: an individual file counts as 1
         if (item instanceof FileItem) {
             return 1;
         }
 
-        // Recursive case: search through a folder
         if (item instanceof Folder) {
 
             Folder folder = (Folder) item;
@@ -22,5 +24,63 @@ public class FileSystemAnalyzer {
         }
 
         return 0;
+    }
+
+    // ==========================================
+    // PHASE 2: Recursive Storage Calculation
+    // ==========================================
+
+    public static int calculateTotalSizeRecursive(FileSystemItem item) {
+
+        if (item instanceof FileItem) {
+            return item.getSizeInKB();
+        }
+
+        if (item instanceof Folder) {
+
+            Folder folder = (Folder) item;
+            int totalSize = 0;
+
+            for (FileSystemItem child : folder.getItems()) {
+                totalSize += calculateTotalSizeRecursive(child);
+            }
+
+            return totalSize;
+        }
+
+        return 0;
+    }
+
+    // ==========================================
+    // PHASE 2: Find the Largest File
+    // ==========================================
+
+    public static FileItem findLargestFileRecursive(FileSystemItem item) {
+
+        if (item instanceof FileItem) {
+            return (FileItem) item;
+        }
+
+        if (item instanceof Folder) {
+
+            Folder folder = (Folder) item;
+            FileItem largest = null;
+
+            for (FileSystemItem child : folder.getItems()) {
+
+                FileItem childMax = findLargestFileRecursive(child);
+
+                if (childMax != null &&
+                        (largest == null ||
+                                childMax.getSizeInKB() > largest.getSizeInKB())) {
+
+                    largest = childMax;
+                }
+            }
+
+            return largest;
+        }
+
+        return null;
     }
 }
